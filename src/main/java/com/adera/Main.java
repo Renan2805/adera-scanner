@@ -1,41 +1,123 @@
 package com.adera;
 
+import com.adera.commonTypes.Config;
+import com.adera.entities.EstablishmentEntity;
+import com.adera.entities.UserEntity;
+import com.adera.repositories.EstablishmentRepository;
+import com.adera.repositories.UserRepository;
 import com.github.britooo.looca.api.core.Looca;
-import com.github.britooo.looca.api.group.memoria.Memoria;
-import com.github.britooo.looca.api.group.processador.Processador;
-import com.github.britooo.looca.api.group.rede.Rede;
-import com.github.britooo.looca.api.group.sistema.Sistema;
-import com.github.britooo.looca.api.util.Conversor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) throws SQLException {
-        Looca looca = new Looca();
+    private static UserEntity user = null;
+    private static EstablishmentEntity establishment = null;
+    private static boolean logged = false;
+    public static void main(String[] args) throws SQLException, FileNotFoundException {
+//        EstablishmentEntity _establishment = null;
+//        if(args.length != 0) {
+//            String ecCode = args[0];
+//            _establishment = EstablishmentRepository.getByEcCode(ecCode);
+//        } else {
+//            AskCodeGui askGui = new AskCodeGui();
+//            askGui.launch();
+//        }
+//        System.out.println(_establishment);
+        ArrayList<String> errList = new ArrayList<String>();
 
-        Sistema sys = looca.getSistema();
-        Rede rede = looca.getRede();
-        Processador cpu = looca.getProcessador();
-        Memoria mem = looca.getMemoria();
+        do {
+            Config cfg = tryReadCfgFile();
 
-        var intefaces = rede.getGrupoDeInterfaces().getInterfaces().get(0).getEnderecoIpv4();
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.printf("""
-                        IP: %s
-                        Uso do processador: %.2f%%
-                        Uso da memória: %s%n""", rede.getGrupoDeInterfaces().getInterfaces(), cpu.getUso(), Conversor.formatarBytes(mem.getEmUso()));
+            if(cfg == null) {
+                createCfgFile();
+                cfg = tryReadCfgFile();
             }
-        };
+            if(errList.contains("notfound")) {
+                System.err.println("\nEmail ou Senha inválidos\n");
+            }
 
-        Timer timer = new Timer("Timer");
+            errList.clear();
 
-        timer.schedule(task, 0, 1000);
+            assert cfg != null;
+            if(user == null && cfg.getUserId() != null) {
+                user = UserRepository.getOneById(cfg.getUserId());
+                if (user != null) {
+                    writeToCfgFile(user.getId().toString());
+                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    logged = true;
+                }
+            } else {
+                user = requestEmailAndPassword();
+
+                if(user == null) {
+                    errList.add("notfound");
+                    System.out.println("\n\nEmail ou senha inválidos\n\n");
+                } else {
+                    writeToCfgFile(user.getId().toString());
+                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    logged = true;
+                }
+            }
+
+        } while (!logged);
+
+
+    }
+
+    public static UserEntity requestEmailAndPassword() throws SQLException {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Email:");
+        String email = in.next();
+
+        System.out.println("Senha:");
+        String password = in.next();
+
+        user = UserRepository.getOneByEmailAndPassword(email, password);
+        return user;
+    }
+
+    public static Config tryReadCfgFile() throws FileNotFoundException {
+        try {
+            File cfgFile = new File("config.txt");
+            Scanner myReader = new Scanner(cfgFile);
+            Config cfg = new Config();
+            while (myReader.hasNextLine()) {
+                cfg.setUserId(myReader.nextLine());
+            }
+            return cfg;
+        } catch(FileNotFoundException e) {
+            return null;
+        }
+    }
+
+    public static void createCfgFile() {
+        try {
+            File myObj = new File("config.txt");
+            myObj.createNewFile();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeToCfgFile(String userId) {
+        try {
+            FileWriter myWriter = new FileWriter("config.txt");
+            myWriter.write(userId);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 }

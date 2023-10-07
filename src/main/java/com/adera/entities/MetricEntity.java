@@ -3,7 +3,7 @@ package com.adera.entities;
 import java.sql.Date;
 import java.util.UUID;
 
-public class RegistryEntity {
+public class MetricEntity {
     public Date date;
     public Integer cpuUsage;
     public Integer ramUsage;
