@@ -1,10 +1,8 @@
 package com.adera.entities;
 
-import com.sun.jna.platform.win32.Guid;
-
 import java.util.UUID;
 
-public class MarketEntity {
+public class EstablishmentEntity {
     public UUID id;
 
     public String fantasyName;
@@ -13,7 +11,7 @@ public class MarketEntity {
 
     @Override
     public String toString() {
-        return "MarketEntity{" +
+        return "EstablishmentEntity{" +
                 "id=" + id +
                 ", fantasyName='" + fantasyName + '\'' +
                 ", cnpj='" + cnpj + '\'' +
