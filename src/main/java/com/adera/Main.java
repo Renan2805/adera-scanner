@@ -24,15 +24,6 @@ public class Main {
     private static EstablishmentEntity establishment = null;
     private static boolean logged = false;
     public static void main(String[] args) throws SQLException, FileNotFoundException {
-//        EstablishmentEntity _establishment = null;
-//        if(args.length != 0) {
-//            String ecCode = args[0];
-//            _establishment = EstablishmentRepository.getByEcCode(ecCode);
-//        } else {
-//            AskCodeGui askGui = new AskCodeGui();
-//            askGui.launch();
-//        }
-//        System.out.println(_establishment);
         ArrayList<String> errList = new ArrayList<String>();
 
         do {
@@ -71,7 +62,7 @@ public class Main {
 
         } while (!logged);
 
-
+        Monitoring.start(establishment);
     }
 
     public static UserEntity requestEmailAndPassword() throws SQLException {
