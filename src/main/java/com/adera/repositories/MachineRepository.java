@@ -11,9 +11,13 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class MachineRepository {
-    private static final Connection conn = ConnectionMySQL.getConnection();
+    private final Connection conn;
 
-    public static Machine getMachineByMacAddress(String macAddress) throws SQLException {
+    public MachineRepository(Connection conn) {
+        this.conn = conn;
+    }
+
+    public Machine getMachineByMacAddress(String macAddress) throws SQLException {
         assert conn != null;
         String query = "select * from maquina where enderecoMac = ?";
         PreparedStatement statement = conn.prepareStatement(query);
@@ -35,7 +39,7 @@ public class MachineRepository {
         }
     }
 
-    public static void insertOne(Machine machine) throws SQLException {
+    public void insertOne(Machine machine) throws SQLException {
         assert conn != null;
         String query = "INSERT INTO maquina VALUES (?, ?, ?, ?, ?)";
         PreparedStatement statement = conn.prepareStatement(query);

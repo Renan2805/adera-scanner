@@ -11,9 +11,13 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class UserRepository {
-    private static final Connection conn = ConnectionMySQL.getConnection();
+    private final Connection conn ;
 
-    public static void insertOne(UserEntity user) throws SQLException {
+    public UserRepository(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void insertOne(UserEntity user) throws SQLException {
         assert conn != null;
         String query = "INSERT INTO usuario VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = conn.prepareStatement(query);
@@ -33,7 +37,7 @@ public class UserRepository {
         }
     }
 
-    public static UserEntity getOneById(String id) throws SQLException {
+    public UserEntity getOneById(String id) throws SQLException {
         assert conn != null;
         String query = "SELECT * FROM usuario WHERE id = ?";
         PreparedStatement statement = conn.prepareStatement(query);
@@ -59,7 +63,7 @@ public class UserRepository {
         }
     }
 
-    public static UserEntity getOneByEmailAndPassword(String email, String password) throws SQLException {
+    public UserEntity getOneByEmailAndPassword(String email, String password) throws SQLException {
         assert conn != null;
         String query = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
         PreparedStatement statement = conn.prepareStatement(query);

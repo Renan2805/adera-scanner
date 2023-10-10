@@ -11,10 +11,13 @@ import java.util.UUID;
 
 public class EstablishmentRepository {
 
-    private static final Connection conn = ConnectionMySQL.getConnection();
+    private final Connection conn;
 
-    public static ArrayList<EstablishmentEntity> getAll() throws SQLException {
-        assert conn != null;
+    public EstablishmentRepository(Connection conn) {
+        this.conn = conn;
+    }
+
+    public ArrayList<EstablishmentEntity> getAll() throws SQLException {
         String query = "SELECT * FROM estabelecimento";
         Statement statement = conn.createStatement();
         try {
@@ -37,7 +40,7 @@ public class EstablishmentRepository {
         }
     }
 
-    public static EstablishmentEntity getOneById(String id) throws SQLException {
+    public EstablishmentEntity getOneById(String id) throws SQLException {
         assert conn != null;
         String query = "select * from estabelecimento where id = ?";
         PreparedStatement statement = conn.prepareStatement(query);
@@ -59,7 +62,7 @@ public class EstablishmentRepository {
         }
     }
 
-    public static ResultSet insertOne(EstablishmentEntity market) throws SQLException {
+    public ResultSet insertOne(EstablishmentEntity market) throws SQLException {
         assert conn != null;
         String query = "INSERT INTO estabelecimento VALUES (?, ?, ?)";
         PreparedStatement statement = conn.prepareStatement(query);
