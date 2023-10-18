@@ -11,28 +11,35 @@ import com.github.britooo.looca.api.group.processador.Processador;
 import com.github.britooo.looca.api.group.sistema.Sistema;
 import com.github.britooo.looca.api.util.Conversor;
 
+import java.io.File;
+import java.util.UUID;
+
 public class Monitoring {
+    private Looca _looca;
 
+    public static void setup(EstablishmentEntity establishment) {
+        Monitoring monitor = new Monitoring();
+        monitor._looca = new Looca();
 
-    public static void start(EstablishmentEntity establishment) {
-        Machine thisMachine = getHardwareInfo();
+        Machine thisMachine = monitor.getHardwareInfo(establishment.getId());
 
+        System.out.println(establishment);
         System.out.println(thisMachine);
     }
 
-    private static Machine getHardwareInfo() {
-
-        Looca looca = new Looca();
+    private Machine getHardwareInfo(UUID establishmentId) {
+        assert this._looca != null;
 
         Machine machine = new Machine();
 
-        Sistema sys = looca.getSistema();
+        Sistema sys = this._looca.getSistema();
         machine.setOs(sys.getSistemaOperacional());
         machine.setVendor(sys.getFabricante());
         machine.setArchitecture(sys.getArquitetura());
-        machine.setMacAddress(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(0).getEnderecoMac());
+        machine.setMacAddress(this._looca.getRede().getGrupoDeInterfaces().getInterfaces().get(0).getEnderecoMac());
+        machine.setEstablishmentId(establishmentId);
 
-        Processador cpu = looca.getProcessador();
+        Processador cpu = this._looca.getProcessador();
         Component cpuComponent = new Component();
         cpuComponent.setType("cpu");
         cpuComponent.setMetricUnit("%");
@@ -49,7 +56,7 @@ public class Monitoring {
         memoryComponent.setModel(Conversor.formatarBytes(mem.getTotal()));
         machine.getComponents().add(memoryComponent);
 
-        DiscoGrupo disks = looca.getGrupoDeDiscos();
+        DiscoGrupo disks = this._looca.getGrupoDeDiscos();
         for (Disco disk : disks.getDiscos()) {
             Component diskComponent = new Component();
             diskComponent.setType("disco");
@@ -58,7 +65,10 @@ public class Monitoring {
             diskComponent.setDescription(Conversor.formatarBytes(disk.getTamanho()));
             machine.getComponents().add(diskComponent);
         }
-
         return machine;
+    }
+
+    private void syncDatabase(Machine machine) {
+
     }
 }

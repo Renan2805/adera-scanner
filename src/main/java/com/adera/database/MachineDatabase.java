@@ -1,7 +1,6 @@
-package com.adera.repositories;
+package com.adera.database;
 
 import com.adera.commonTypes.Machine;
-import com.adera.database.ConnectionMySQL;
 import com.adera.extensions.MySQLExtension;
 
 import java.sql.Connection;
@@ -10,10 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class MachineRepository {
+public class MachineDatabase {
     private final Connection conn;
 
-    public MachineRepository(Connection conn) {
+    public MachineDatabase(Connection conn) {
         this.conn = conn;
     }
 

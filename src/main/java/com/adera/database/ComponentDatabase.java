@@ -1,7 +1,6 @@
-package com.adera.repositories;
+package com.adera.database;
 
 import com.adera.entities.ComponentEntity;
-import com.adera.entities.EstablishmentEntity;
 import com.adera.extensions.MySQLExtension;
 
 import java.sql.Connection;
@@ -11,10 +10,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ComponentRepository {
+public class ComponentDatabase {
     private final Connection conn ;
 
-    public ComponentRepository(Connection conn) {
+    public ComponentDatabase(Connection conn) {
         this.conn = conn;
     }
 

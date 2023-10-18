@@ -1,6 +1,8 @@
 package com.adera;
 
 import com.adera.commonTypes.Config;
+import com.adera.database.EstablishmentDatabase;
+import com.adera.database.UserDatabase;
 import com.adera.entities.EstablishmentEntity;
 import com.adera.entities.UserEntity;
 import com.adera.repositories.EstablishmentRepository;
@@ -41,10 +43,10 @@ public class Main {
 
             assert cfg != null;
             if(user == null && cfg.getUserId() != null) {
-                user = UserRepository.getOneById(cfg.getUserId());
+                user = UserDatabase.getOneById(cfg.getUserId());
                 if (user != null) {
                     writeToCfgFile(user.getId().toString());
-                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    establishment = EstablishmentDatabase.getOneById(user.getEstablishmentId().toString());
                     logged = true;
                 }
             } else {
@@ -55,14 +57,14 @@ public class Main {
                     System.out.println("\n\nEmail ou senha inválidos\n\n");
                 } else {
                     writeToCfgFile(user.getId().toString());
-                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    establishment = EstablishmentDatabase.getOneById(user.getEstablishmentId().toString());
                     logged = true;
                 }
             }
 
         } while (!logged);
 
-        Monitoring.start(establishment);
+        Monitoring.setup(establishment);
     }
 
     public static UserEntity requestEmailAndPassword() throws SQLException {
@@ -73,7 +75,7 @@ public class Main {
         System.out.println("Senha:");
         String password = in.next();
 
-        user = UserRepository.getOneByEmailAndPassword(email, password);
+        user = UserDatabase.getOneByEmailAndPassword(email, password);
         return user;
     }
 
