@@ -1,0 +1,15 @@
+com/adera/Monitoring.class
+com/adera/commonTypes/ProgramConfig.class
+com/adera/commonTypes/Machine.class
+com/adera/extensions/MySQLExtension.class
+com/adera/entities/UserEntity.class
+com/adera/database/ConnectionMySQL.class
+com/adera/entities/EstablishmentEntity.class
+com/adera/commonTypes/User.class
+com/adera/commonTypes/Address.class
+com/adera/repositories/EstablishmentRepository.class
+com/adera/commonTypes/Config.class
+com/adera/entities/MetricEntity.class
+com/adera/repositories/UserRepository.class
+com/adera/Main.class
+com/adera/commonTypes/Establishment.class
