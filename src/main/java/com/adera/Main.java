@@ -17,13 +17,14 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
+// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     private static UserEntity user = null;
     private static EstablishmentEntity establishment = null;
     private static boolean logged = false;
-
     public static void main(String[] args) throws SQLException, FileNotFoundException {
-        //        EstablishmentEntity _establishment = null;
+//        EstablishmentEntity _establishment = null;
 //        if(args.length != 0) {
 //            String ecCode = args[0];
 //            _establishment = EstablishmentRepository.getByEcCode(ecCode);
@@ -32,22 +33,23 @@ public class Main {
 //            askGui.launch();
 //        }
 //        System.out.println(_establishment);
-        ArrayList<String> errList = new ArrayList<>();
+        ArrayList<String> errList = new ArrayList<String>();
 
         do {
             Config cfg = tryReadCfgFile();
 
-            if (cfg == null) {
+            if(cfg == null) {
                 createCfgFile();
                 cfg = tryReadCfgFile();
             }
-
-            if (errList.contains("notfound")) {
+            if(errList.contains("notfound")) {
                 System.err.println("\nEmail ou Senha inválidos\n");
             }
 
             errList.clear();
-            if (user == null && cfg != null && cfg.getUserId() != null) {
+
+            assert cfg != null;
+            if(user == null && cfg.getUserId() != null) {
                 user = UserRepository.getOneById(cfg.getUserId());
                 if (user != null) {
                     writeToCfgFile(user.getId().toString());
@@ -57,9 +59,9 @@ public class Main {
             } else {
                 user = requestEmailAndPassword();
 
-                if (user == null) {
-                    errList.add("Usuário não encontrado!");
-                    System.out.println("\n\nEmail ou senha inválidos!\n\n");
+                if(user == null) {
+                    errList.add("notfound");
+                    System.out.println("\n\nEmail ou senha inválidos\n\n");
                 } else {
                     writeToCfgFile(user.getId().toString());
                     establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
@@ -69,68 +71,19 @@ public class Main {
 
         } while (!logged);
 
-        showMenu();
-    }
 
-    public static void showMenu() throws SQLException {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("=== MENU ===");
-            System.out.println("1. Fazer Login");
-            System.out.println("2. Ver o que você pode monitorar");
-            System.out.println("3. Sobre nós");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-
-            int option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    // Opção de fazer login
-                    try {
-                        user = requestEmailAndPassword();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (user != null) {
-                        establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
-                        logged = true;
-                        System.out.println("Login realizado com sucesso!");
-                    } else {
-                        System.out.println("Email ou senha inválidos.");
-                    }
-                    break;
-                case 2:
-                    // Opção de mostrar o que pode ser monitorado
-                    mostrarOpcoesMonitoramento();
-                    break;
-                case 3:
-                    // Opção "Sobre nós"
-                    mostrarSobreNos();
-                    break;
-                case 0:
-                    // Opção de sair
-                    System.out.println("Saindo...");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Opção inválida. Por favor, tente novamente.");
-                    break;
-            }
-
-            System.out.println();
-        }
     }
 
     public static UserEntity requestEmailAndPassword() throws SQLException {
         Scanner in = new Scanner(System.in);
-        System.out.print("Email: ");
+        System.out.println("Email:");
         String email = in.next();
 
-        System.out.print("Senha: ");
+        System.out.println("Senha:");
         String password = in.next();
 
-        return UserRepository.getOneByEmailAndPassword(email, password);
+        user = UserRepository.getOneByEmailAndPassword(email, password);
+        return user;
     }
 
     public static Config tryReadCfgFile() throws FileNotFoundException {
@@ -142,7 +95,7 @@ public class Main {
                 cfg.setUserId(myReader.nextLine());
             }
             return cfg;
-        } catch (FileNotFoundException e) {
+        } catch(FileNotFoundException e) {
             return null;
         }
     }
@@ -166,21 +119,5 @@ public class Main {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-    }
-
-    public static void mostrarOpcoesMonitoramento() {
-        System.out.println("=== O que você pode monitorar ===");
-        System.out.println("- CPU");
-        System.out.println("- Memória");
-        System.out.println("- Disco");
-        System.out.println("- Rede");
-        System.out.println();
-    }
-
-    public static void mostrarSobreNos() {
-        System.out.println("=== Sobre nós ===");
-        System.out.println("Nossa inovação oferece um Dashboard de Controle Avançado que permite aos gerentes monitorar em tempo real o desempenho dos totens. Eles podem agendar reinicializações preventivas e executar medidas imediatas para evitar problemas e solucionar o mau funcionamento do totem através do Adera Scanner.");
-        System.out.println("Também recebem alertas imediatos caso ocorra qualquer instabilidade, e a integração eficiente entre nossa aplicação e o Dashboard facilita a tomada de decisões informadas, proporcionando uma experiência de compra mais fluida e confiável para os clientes.");
-        System.out.println();
     }
 }
