@@ -1,0 +1,15 @@
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/entities/EstablishmentEntity.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/Config.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/Establishment.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/Main.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/Machine.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/extensions/MySQLExtension.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/entities/MetricEntity.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/User.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/repositories/EstablishmentRepository.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/repositories/UserRepository.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/ProgramConfig.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/Monitoring.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/commonTypes/Address.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/entities/UserEntity.java
+/home/icaro/TEMP/adera-scanner/src/main/java/com/adera/database/ConnectionMySQL.java
