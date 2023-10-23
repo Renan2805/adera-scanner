@@ -14,6 +14,7 @@ public class ComponentEntity {
     private UUID id;
     private String model;
     private String description;
+    private Double capacity;
     private UUID idMachine;
     private ComponentTypeEnum type;
 }

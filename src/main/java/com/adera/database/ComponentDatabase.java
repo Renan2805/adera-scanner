@@ -32,7 +32,8 @@ public class ComponentDatabase {
                         UUID.fromString(result.getString(1)),
                         result.getString(2),
                         result.getString(3),
-                        UUID.fromString(result.getString(4)),
+                        result.getDouble(4),
+                        UUID.fromString(result.getString(5)),
                         ComponentTypeEnum.valueOf(result.getString("tipocomponente.nome"))
                 );
                 list.add(component);
@@ -46,7 +47,7 @@ public class ComponentDatabase {
 
     }
     public ArrayList<ComponentEntity> getComponentByMachineId(UUID machineId) throws SQLException {
-        String query = "SELECT * FROM maquinaComponente WHERE fkMaquina = ?";
+        String query = "SELECT * FROM maquinacomponente WHERE fkMaquina = ?";
         PreparedStatement statement = this.conn.prepareStatement(query);
 
         try {
@@ -60,7 +61,8 @@ public class ComponentDatabase {
                         UUID.fromString(result.getString(1)),
                         result.getString(2),
                         result.getString(3),
-                        UUID.fromString(result.getString(4)),
+                        result.getDouble(4),
+                        UUID.fromString(result.getString(5)),
                         ComponentTypeEnum.valueOf(result.getString(5))
                 );
                 list.add(component);
@@ -74,15 +76,16 @@ public class ComponentDatabase {
     }
 
     public void insertOne(ComponentEntity component) throws SQLException {
-        String query = "INSERT INTO maquinaComponente VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO maquinacomponente VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = this.conn.prepareStatement(query);
 
         try {
             statement.setString(1, component.getId().toString());
             statement.setString(2, component.getModel());
             statement.setString(3, component.getDescription());
-            statement.setString(4, component.getIdMachine().toString());
-            statement.setInt(5, component.getType().getId());
+            statement.setDouble(4, component.getCapacity());
+            statement.setString(5, component.getIdMachine().toString());
+            statement.setInt(6, component.getType().getId());
 
             statement.execute();
 

@@ -11,6 +11,7 @@ public abstract class ComponentMapper {
                 self.getId(),
                 self.getModel(),
                 self.getDescription(),
+                self.getCapacity(),
                 establishmentId,
                 self.getType()
         );
@@ -21,6 +22,7 @@ public abstract class ComponentMapper {
                 self.getId(),
                 self.getModel(),
                 self.getDescription(),
+                self.getCapacity(),
                 self.getType(),
                 metricUnit
         );
