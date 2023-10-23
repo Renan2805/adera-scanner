@@ -1,6 +1,8 @@
 package com.adera;
 
 import com.adera.commonTypes.Config;
+import com.adera.database.EstablishmentDatabase;
+import com.adera.database.UserDatabase;
 import com.adera.entities.EstablishmentEntity;
 import com.adera.entities.UserEntity;
 import com.adera.repositories.EstablishmentRepository;
@@ -12,10 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -24,16 +23,15 @@ public class Main {
     private static EstablishmentEntity establishment = null;
     private static boolean logged = false;
     public static void main(String[] args) throws SQLException, FileNotFoundException {
-//        EstablishmentEntity _establishment = null;
-//        if(args.length != 0) {
-//            String ecCode = args[0];
-//            _establishment = EstablishmentRepository.getByEcCode(ecCode);
-//        } else {
-//            AskCodeGui askGui = new AskCodeGui();
-//            askGui.launch();
-//        }
-//        System.out.println(_establishment);
         ArrayList<String> errList = new ArrayList<String>();
+
+        System.out.println("""
+                 ______     _____     ______     ______     ______     ______     ______     ______     __   __     __   __     ______     ______   \s
+                /\\  __ \\   /\\  __-.  /\\  ___\\   /\\  == \\   /\\  __ \\   /\\  ___\\   /\\  ___\\   /\\  __ \\   /\\ "-.\\ \\   /\\ "-.\\ \\   /\\  ___\\   /\\  == \\  \s
+                \\ \\  __ \\  \\ \\ \\/\\ \\ \\ \\  __\\   \\ \\  __<   \\ \\  __ \\  \\ \\___  \\  \\ \\ \\____  \\ \\  __ \\  \\ \\ \\-.  \\  \\ \\ \\-.  \\  \\ \\  __\\   \\ \\  __<  \s
+                 \\ \\_\\ \\_\\  \\ \\____-  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\ \\_\\  \\/\\_____\\  \\ \\_____\\  \\ \\_\\ \\_\\  \\ \\_\\\\"\\_\\  \\ \\_\\\\"\\_\\  \\ \\_____\\  \\ \\_\\ \\_\\\s
+                  \\/_/\\/_/   \\/____/   \\/_____/   \\/_/ /_/   \\/_/\\/_/   \\/_____/   \\/_____/   \\/_/\\/_/   \\/_/ \\/_/   \\/_/ \\/_/   \\/_____/   \\/_/ /_/\s
+                                                                                                                                                    \s""");
 
         do {
             Config cfg = tryReadCfgFile();
@@ -42,6 +40,7 @@ public class Main {
                 createCfgFile();
                 cfg = tryReadCfgFile();
             }
+
             if(errList.contains("notfound")) {
                 System.err.println("\nEmail ou Senha inválidos\n");
             }
@@ -50,10 +49,13 @@ public class Main {
 
             assert cfg != null;
             if(user == null && cfg.getUserId() != null) {
-                user = UserRepository.getOneById(cfg.getUserId());
+                user = UserDatabase.getOneById(cfg.getUserId());
                 if (user != null) {
                     writeToCfgFile(user.getId().toString());
-                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    establishment = EstablishmentDatabase.getOneById(user.getEstablishmentId().toString());
+
+                    EstablishmentRepository ecRepo = new EstablishmentRepository(new HashMap<String, ArrayList<EstablishmentEntity>>());
+
                     logged = true;
                 }
             } else {
@@ -64,14 +66,14 @@ public class Main {
                     System.out.println("\n\nEmail ou senha inválidos\n\n");
                 } else {
                     writeToCfgFile(user.getId().toString());
-                    establishment = EstablishmentRepository.getOneById(user.getEstablishmentId().toString());
+                    establishment = EstablishmentDatabase.getOneById(user.getEstablishmentId().toString());
                     logged = true;
                 }
             }
 
         } while (!logged);
 
-
+        Monitoring.setup(establishment);
     }
 
     public static UserEntity requestEmailAndPassword() throws SQLException {
@@ -82,7 +84,7 @@ public class Main {
         System.out.println("Senha:");
         String password = in.next();
 
-        user = UserRepository.getOneByEmailAndPassword(email, password);
+        user = UserDatabase.getOneByEmailAndPassword(email, password);
         return user;
     }
 

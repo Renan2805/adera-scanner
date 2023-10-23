@@ -1,77 +1,66 @@
 package com.adera.repositories;
 
-import com.adera.database.ConnectionMySQL;
+import com.adera.database.EstablishmentDatabase;
 import com.adera.entities.EstablishmentEntity;
 import com.adera.extensions.MySQLExtension;
 import jdk.jshell.spi.ExecutionControl;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
+import java.util.Map;
 
-public class EstablishmentRepository {
+@RequiredArgsConstructor
+public class EstablishmentRepository implements IUnitOfWork<EstablishmentEntity> {
 
-    private static final Connection conn = ConnectionMySQL.getConnection();
+    private final Map<String, ArrayList<EstablishmentEntity>> context;
 
-    public static ArrayList<EstablishmentEntity> getAll() throws SQLException {
-        assert conn != null;
-        String query = "SELECT * FROM estabelecimento";
-        Statement statement = conn.createStatement();
-        try {
-            ResultSet result = statement.executeQuery(query);
+    @Override
+    public void registerNew(EstablishmentEntity entity) {
+        register(entity, "INSERT");
+    }
 
-            ArrayList<EstablishmentEntity> list = new ArrayList<>();
+    @Override
+    public void registerModified(EstablishmentEntity entity) {
+        register(entity, "MODIFY");
+    }
 
-            while(result.next()) {
-                EstablishmentEntity market = new EstablishmentEntity();
-                market.setId(UUID.fromString(result.getString(1)));
-                market.setFantasyName(result.getString(2));
-                market.setCnpj(result.getString(3));
-                list.add(market);
+    @Override
+    public void registerDeleted(EstablishmentEntity entity) {
+        register(entity, "DELETE");
+    }
+
+    private void register(EstablishmentEntity ec, String operation) {
+        ArrayList<EstablishmentEntity> establishmentsToOperate = context.get(operation);
+        if(establishmentsToOperate == null) {
+            establishmentsToOperate = new ArrayList<EstablishmentEntity>();
+        }
+        establishmentsToOperate.add(ec);
+        context.put(operation, establishmentsToOperate);
+    }
+
+    @SneakyThrows
+    @Override
+    public void commit() {
+        throw new ExecutionControl.NotImplementedException("");
+    }
+
+    private void commitInsert() {
+        ArrayList<EstablishmentEntity> ecsToBeInserted = context.get("INSERT");
+        for(var establishment : ecsToBeInserted) {
+            try {
+                EstablishmentDatabase.insertOne(establishment);
+            } catch (SQLException e) {
+                MySQLExtension.handleException(e);
             }
-
-            return list;
-        } catch (SQLException e) {
-            MySQLExtension.handleException(e);
-            return new ArrayList<>();
         }
     }
 
-    public static EstablishmentEntity getOneById(String id) throws SQLException {
-        assert conn != null;
-        String query = "select * from estabelecimento where id = ?";
-        PreparedStatement statement = conn.prepareStatement(query);
-        try {
-            statement.setString(1, id);
-            statement.execute();
-            ResultSet result = statement.getResultSet();
-
-            EstablishmentEntity ec = new EstablishmentEntity();
-            while(result.next()) {
-                ec.setId(UUID.fromString(result.getString(1)));
-                ec.setFantasyName(result.getString(2));
-                ec.setCnpj(result.getString(3));
-            }
-            return ec;
-        } catch (SQLException e) {
-            MySQLExtension.handleException(e);
-            return null;
-        }
+    @SneakyThrows
+    private void commitModify() {
+        throw new ExecutionControl.NotImplementedException("");
     }
 
-    public static ResultSet insertOne(EstablishmentEntity market) throws SQLException {
-        assert conn != null;
-        String query = "INSERT INTO estabelecimento VALUES (?, ?, ?)";
-        PreparedStatement statement = conn.prepareStatement(query);
-        try {
-            statement.setString(1, market.getId().toString());
-            statement.setString(2, market.getFantasyName());
-            statement.setString(3, market.getCnpj());
-            statement.execute();
-            return statement.getResultSet();
-        } catch (SQLException e) {
-            MySQLExtension.handleException(e);
-            return null;
-        }
-    }
 }

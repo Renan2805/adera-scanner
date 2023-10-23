@@ -1,7 +1,14 @@
 package com.adera.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.UUID;
 
+@Getter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class EstablishmentEntity {
     public UUID id;
 
@@ -18,24 +25,12 @@ public class EstablishmentEntity {
                 '}';
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getFantasyName() {
-        return fantasyName;
-    }
-
     public void setFantasyName(String fantasyName) {
         this.fantasyName = fantasyName;
-    }
-
-    public String getCnpj() {
-        return cnpj;
     }
 
     public void setCnpj(String cnpj) {

@@ -1,8 +1,12 @@
 package com.adera.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
 public class UserEntity {
+    @Getter @Setter
     private UUID id;
 
     private String email;
@@ -28,14 +32,6 @@ public class UserEntity {
                 ", role='" + role + '\'' +
                 ", idEstablishment=" + establishmentId +
                 '}';
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getEmail() {

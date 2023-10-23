@@ -1,7 +1,10 @@
 package com.adera.commonTypes;
 
+import lombok.AllArgsConstructor;
+
 import java.util.UUID;
 
+@AllArgsConstructor
 public class Establishment {
     private UUID id;
 

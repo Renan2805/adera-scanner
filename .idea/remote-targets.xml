@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="ubuntu@144.22.155.185:22" type="ssh/sftp" uuid="f528f4a6-75dd-450a-8814-f6d18473c44b">
+        <config>
+          <option name="projectRootOnTarget" value="/home/ubuntu/adera-scanner" />
+          <option name="serverName" value="ubuntu@144.22.155.185:22 key" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/lib/jvm/java-1.17.0-openjdk-arm64" />
+            <option name="javaVersionString" value="17.0.0" />
+          </config>
+        </ContributedStateBase>
+      </target>
+      <target name="ubuntu@144.22.155.185:222" type="ssh/sftp" uuid="39c5950e-ff8c-407d-8491-5895ea053478">
+        <config>
+          <option name="projectRootOnTarget" value="/home/ubuntu/adera-scanner" />
+          <option name="serverName" value="ubuntu@144.22.155.185:22 key" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/lib/jvm/java-17-openjdk-arm64" />
+            <option name="javaVersionString" value="17.0.8" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
