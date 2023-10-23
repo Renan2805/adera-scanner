@@ -14,10 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -35,6 +32,7 @@ public class Main {
                 createCfgFile();
                 cfg = tryReadCfgFile();
             }
+
             if(errList.contains("notfound")) {
                 System.err.println("\nEmail ou Senha inválidos\n");
             }
@@ -47,6 +45,9 @@ public class Main {
                 if (user != null) {
                     writeToCfgFile(user.getId().toString());
                     establishment = EstablishmentDatabase.getOneById(user.getEstablishmentId().toString());
+
+                    EstablishmentRepository ecRepo = new EstablishmentRepository(new HashMap<String, ArrayList<EstablishmentEntity>>());
+
                     logged = true;
                 }
             } else {

@@ -1,7 +1,16 @@
 package com.adera.commonTypes;
 
+import com.adera.enums.ComponentTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Getter @Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Component {
     private UUID id;
 
@@ -9,58 +18,19 @@ public class Component {
 
     private String description;
 
-    private String type;
+    private ComponentTypeEnum type;
 
     private String metricUnit;
 
     @Override
     public String toString() {
-        return "Component{" +
-                "id=" + id +
-                ", model='" + model + '\'' +
-                ", description='" + description + '\'' +
-                ", type='" + type + '\'' +
-                ", metricUnit='" + metricUnit + '\'' +
-                '}';
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getMetricUnit() {
-        return metricUnit;
-    }
-
-    public void setMetricUnit(String metricUnit) {
-        this.metricUnit = metricUnit;
+        return String.format("""
+                \n\t\tComponent {
+                    \t\tid: %s,
+                    \t\tmodel: %s,
+                    \t\tdescription: %s,
+                    \t\ttype: %s,
+                    \t\tmetricUnit: %s
+                \t\t}""", id == null ? "null" : id.toString(), model, description, type, metricUnit);
     }
 }

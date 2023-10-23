@@ -1,9 +1,12 @@
 package com.adera.commonTypes;
 
+import lombok.AllArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
+@AllArgsConstructor
 public class Machine {
     private UUID id;
 
@@ -38,15 +41,16 @@ public class Machine {
 
     @Override
     public String toString() {
-        return "Machine{" +
-                "id=" + id +
-                ", macAddress='" + macAddress + '\'' +
-                ", os='" + os + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", architecture=" + architecture +
-                ", components=" + components +
-                ", establishmentId=" + establishmentId +
-                '}';
+        return String.format("""
+                Machine {
+                    id: %s,
+                    macAddress: %s,
+                    os: %s,
+                    vendor: %s,
+                    architecture: %d,
+                    components: %s,
+                    establishmentId: %s
+                }""", id == null ? "null" : id.toString(), macAddress, os, vendor, architecture, components, establishmentId.toString());
     }
 
     public UUID getId() {

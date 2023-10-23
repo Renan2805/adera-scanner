@@ -1,15 +1,21 @@
 package com.adera.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Date;
 import java.util.UUID;
 
+@Getter @Setter
+@AllArgsConstructor
 public class MetricEntity {
-    public Date date;
-    public Integer cpuUsage;
-    public Integer ramUsage;
 
-    /**
-     * The foreign key of a system in the database
-     */
-    public UUID systemId;
+    public UUID id;
+
+    public Date date;
+
+    public Integer measurement;
+
+    public UUID fkComponent;
 }
