@@ -27,10 +27,8 @@ import com.github.britooo.looca.api.group.sistema.Sistema;
 import com.github.britooo.looca.api.util.Conversor;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
-import org.checkerframework.checker.units.qual.A;
 
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.*;
 
 public class Monitoring {
@@ -47,7 +45,6 @@ public class Monitoring {
         monitor.establishment = EstablishmentMapper.toEstablishment(establishment);
 
         MachineEntity isNewMachine = monitor.checkIfNewMachine();
-        System.out.println(isNewMachine.getId());
         if(isNewMachine != null) {
             ComponentRepository repository = new ComponentRepository(new HashMap<>());
             ComponentDatabase database = new ComponentDatabase(ConnectionMySQL.getConnection());
@@ -73,17 +70,6 @@ public class Monitoring {
                 MySQLExtension.handleException(e);
             }
 
-
-//            ArrayList<ComponentEntity> machineComponentsInDatabase = monitor.findMachineComponents();
-//
-//            if(machineComponentsInDatabase == null) {
-//                for(Component component : monitor.machine.getComponents()) {
-//                    component.setId(UUID.randomUUID());
-//                    ComponentEntity entity = ComponentMapper.toComponentEntity(component, monitor.machine.getId());
-//                    repository.registerNew(entity);
-//                }
-//            }
-
             repository.commit();
         } else {
             monitor.machine.setId(UUID.randomUUID());
@@ -103,13 +89,12 @@ public class Monitoring {
             componentRepository.commit();
         }
 
-        System.out.println(establishment);
-        System.out.println(monitor.machine);
-
         monitor.start();
     }
 
     private void start() {
+        System.out.println("Iniciando o monitoramento na maquina " + this.machine.getId());
+
         MetricRepository repository = new MetricRepository();
         TimerTask task = new TimerTask() {
             @Override
@@ -117,13 +102,15 @@ public class Monitoring {
                 var components = machine.getComponents();
 
                 for(var component : components) {
-                    System.out.println(component);
                     if(component.getType() == ComponentTypeEnum.CPU) {
                         repository.registerNew(getCpuMetric(component.getId()));
+                    }else if(component.getType() == ComponentTypeEnum.MEMORY) {
+                        repository.registerNew(getMemoryMetric(component.getId()));
                     }
                 }
 
                 repository.commit();
+                System.out.println("Métricas inseridas no banco de dados!");
             }
         };
 
@@ -135,8 +122,29 @@ public class Monitoring {
     private MetricEntity getCpuMetric(UUID componentId) {
         return new MetricEntity(
                 UUID.randomUUID(),
-                new java.sql.Date(new java.util.Date().getTime()),
-                this._looca.getProcessador().getUso().intValue(),
+                new java.sql.Date(new java.util.Date(System.currentTimeMillis()).getTime()),
+                Double.toString(this._looca.getProcessador().getUso()),
+                componentId
+        );
+    }
+
+    private MetricEntity getMemoryMetric(UUID componentId) {
+        return new MetricEntity(
+                UUID.randomUUID(),
+                new java.sql.Date(new java.util.Date(System.currentTimeMillis()).getTime()),
+                Conversor.formatarBytes(this._looca.getMemoria().getEmUso()),
+                componentId
+        );
+    }
+
+    private MetricEntity getDiskMetric(UUID componentId, Disco disk) {
+        var qtdDados = disk.getBytesDeEscritas() + disk.getBytesDeLeitura();
+        var taxa = qtdDados / disk.getTempoDeTransferencia();
+
+        return new MetricEntity(
+                UUID.randomUUID(),
+                new java.sql.Date(new java.util.Date(System.currentTimeMillis()).getTime()),
+                Conversor.formatarBytes(taxa),
                 componentId
         );
     }
@@ -192,7 +200,6 @@ public class Monitoring {
     private MachineEntity checkIfNewMachine() {
         try {
             MachineEntity existing = new MachineDatabase().getMachineByMacAddress(this.machine.getMacAddress());
-            System.out.println(existing);
             return existing;
         } catch(SQLException e) {
             MySQLExtension.handleException(e);

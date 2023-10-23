@@ -54,7 +54,6 @@ public class ComponentRepository implements IUnitOfWork<ComponentEntity>{
 
         ArrayList<ComponentEntity> componentsToBeInserted = this.context.get("INSERT");
         for(ComponentEntity component : componentsToBeInserted) {
-            System.out.println("Componente: ------------" + component);
             try {
                 database.insertOne(component);
             } catch (SQLException e) {

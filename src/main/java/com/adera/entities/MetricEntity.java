@@ -15,7 +15,7 @@ public class MetricEntity {
 
     public Date date;
 
-    public Integer measurement;
+    public String measurement;
 
     public UUID fkComponent;
 }

@@ -87,7 +87,6 @@ public class ComponentDatabase {
             statement.execute();
 
             ResultSet result = statement.getResultSet();
-            System.out.println(result);
         } catch(SQLException e) { MySQLExtension.handleException(e); }
     }
 }
