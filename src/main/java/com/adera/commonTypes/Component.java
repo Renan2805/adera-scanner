@@ -18,6 +18,8 @@ public class Component {
 
     private String description;
 
+    private Double capacity;
+
     private ComponentTypeEnum type;
 
     private String metricUnit;

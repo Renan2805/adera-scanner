@@ -170,6 +170,7 @@ public class Monitoring {
                 null,
                 cpu.getNome(),
                 cpuDescription,
+                cpu.getNumeroCpusLogicas().doubleValue(),
                 ComponentTypeEnum.CPU,
                 "%"
         );
@@ -180,6 +181,7 @@ public class Monitoring {
         memoryComponent.setType(ComponentTypeEnum.MEMORY);
         memoryComponent.setMetricUnit("byte");
         memoryComponent.setModel(Conversor.formatarBytes(mem.getTotal()));
+        memoryComponent.setCapacity(mem.getTotal().doubleValue());
         memoryComponent.setDescription(Conversor.formatarBytes(mem.getTotal()));
         components.add(memoryComponent);
 
@@ -189,6 +191,7 @@ public class Monitoring {
             diskComponent.setType(ComponentTypeEnum.DISK);
             diskComponent.setMetricUnit("byte");
             diskComponent.setModel(disk.getModelo());
+            diskComponent.setCapacity(disk.getTamanho().doubleValue());
             diskComponent.setDescription(Conversor.formatarBytes(disk.getTamanho()));
             components.add(diskComponent);
         }
