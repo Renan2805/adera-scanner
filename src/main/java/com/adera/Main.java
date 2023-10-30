@@ -5,6 +5,7 @@ import com.adera.database.EstablishmentDatabase;
 import com.adera.database.UserDatabase;
 import com.adera.entities.EstablishmentEntity;
 import com.adera.entities.UserEntity;
+import com.adera.gui.Monitor;
 import com.adera.repositories.EstablishmentRepository;
 import com.adera.repositories.UserRepository;
 import com.github.britooo.looca.api.core.Looca;
@@ -72,6 +73,9 @@ public class Main {
             }
 
         } while (!logged);
+
+        Monitor dialog = new Monitor();
+        dialog.setVisible(true);
 
         Monitoring.setup(establishment);
     }
